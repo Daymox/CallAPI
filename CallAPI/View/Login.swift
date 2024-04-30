@@ -10,6 +10,7 @@ import SwiftUI
 struct Login: View {
 	@State var email = ""
 	@State var password = ""
+	@State var isPressed = false
 	
 	@EnvironmentObject var login: PosViewModel
 	
@@ -39,6 +40,11 @@ struct Login: View {
 						.frame(maxWidth: .infinity, maxHeight: 50)
 						.background(Color.blue)
 						.clipShape(RoundedRectangle(cornerRadius: 10))
+				}
+				.scaleEffect(isPressed ? 1.1 : 1)
+				.animation(.easeInOut(duration: 0.2))
+				.onTapGesture {
+					isPressed.toggle()
 				}
 			}
 			.padding()

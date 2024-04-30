@@ -10,15 +10,23 @@ import SwiftUI
 struct UserDetail: View {
 	var id: Int
 	@StateObject var user = UserDetailViewModel()
+	@State private var isImageLoaded = false
 	
 	var body: some View {
 		VStack(alignment: .center) {
-			AsyncImage(url: URL(string: user.image)) { image in
-				image.image?
-					.resizable()
+			if isImageLoaded {
+				AsyncImage(url: URL(string: user.image)) { image in
+					image.image?
+						.resizable()
+						.transition(.opacity)
+				}
+				.frame(width: 300, height: 300)
+			} else {
+				Rectangle()
+					.fill(Color.gray.opacity(0.3))
+					.frame(width: 300, height: 300)
 			}
-			.frame(width: 300, height: 300)
-	
+			
 			labelInfo(title: "Nombre", value: user.firstName)
 			labelInfo(title: "Apellido", value: user.lastName)
 			labelInfo(title: "Edad", value: user.age)
@@ -30,10 +38,13 @@ struct UserDetail: View {
 		.onAppear {
 			user.fetch(id: id)
 		}
+		.onReceive(user.$image) { _ in
+			withAnimation {
+				isImageLoaded = true
+			}
+		}
 	}
 }
-
-
 
 struct labelInfo: View {
 	let title: String
