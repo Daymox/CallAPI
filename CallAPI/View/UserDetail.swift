@@ -11,6 +11,7 @@ struct UserDetail: View {
 	var id: Int
 	@StateObject var user = UserDetailViewModel()
 	@State private var isImageLoaded = false
+	@State private var isRotated = false
 	
 	var body: some View {
 		VStack(alignment: .center) {
@@ -18,7 +19,13 @@ struct UserDetail: View {
 				AsyncImage(url: URL(string: user.image)) { image in
 					image.image?
 						.resizable()
-						.transition(.opacity)
+						.scaledToFit()
+						.rotationEffect(Angle.degrees(isRotated ? 360 : 0))
+						.onTapGesture {
+							withAnimation {
+								self.isRotated.toggle()
+							}
+						}
 				}
 				.frame(width: 300, height: 300)
 			} else {
